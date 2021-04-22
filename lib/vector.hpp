@@ -11,12 +11,12 @@ template<typename T, typename Randomizer = randomizer<T>>
 class vector : public std::vector<T> {
 public:
     template<typename Generator>
-    void generate(int sz, std::pair<T, T> const& range, Generator& gen) {
+    void generate(int n, std::pair<T, T> const& range, Generator& gen) {
         Randomizer rng(range.first, range.second);
 
-        this->resize(sz);
+        this->resize(n);
 
-        for (int i = 0; i < sz; i++)
+        for (int i = 0; i < n; i++)
             (*this)[i] = rng(gen);
     }
 
