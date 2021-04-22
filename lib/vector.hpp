@@ -17,7 +17,7 @@ public:
         this->resize(sz);
 
         for (int i = 0; i < sz; i++)
-            this->at(i) = rng(gen);
+            (*this)[i] = rng(gen);
     }
 
     friend std::ostream& operator<<(std::ostream& os, libgen::vector<T> const& V) {
@@ -29,7 +29,7 @@ public:
     void operator=(const std::vector<T>& v) {
         this->resize(v.size());
         for(std::size_t i = 0; i < v.size(); i++)
-            this->at(i) = v[i];
+            (*this)[i] = v[i];
     }
 private:
 };
