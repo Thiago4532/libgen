@@ -9,11 +9,10 @@
 
 namespace libgen {
 
-template<int index = 1>
 class Tree : public std::vector<std::pair<int,int>> {
 public:
     template <typename Generator>
-    void generate_prufer(int n, Generator& gen) {
+    void generate_prufer(int n, Generator& gen, int index = 1) {
         if(n == 1) return;
         this->resize(n-1);
         
@@ -45,13 +44,12 @@ public:
     }
 
     template<typename Generator>
-    void generate_blocks(int n, int group_size, Generator& gen) {
+    void generate_blocks(int n, int group_size, Generator& gen, int index = 1) {
         std::vector<std::vector<int>> block;
         libgen::randomizer<int> rng(1, group_size);
 
-        std::vector<int> ind(n);
-        std::iota(ind.begin(), ind.end(), 0);
-        std::shuffle(ind.begin(), ind.end(), gen);
+        libgen::vector<int> ind;
+        ind.permutation(n, 0, gen);
 
         this->resize(n-1);
         int pos = 0;
@@ -66,8 +64,8 @@ public:
             sz += b;
         }
 
-        Tree<0> t;
-        t.generate_prufer((int)block.size(), gen);
+        Tree t;
+        t.generate_prufer((int)block.size(), gen, 0);
 
         // It is too expensive to declare a libgen::randomizer<int> every time
         auto rnd = [&gen](int m) { return (int)(gen() % m + m) % m; };
@@ -82,25 +80,25 @@ public:
 private:
 };
 
-template <typename T = int, int index = 1, typename Randomizer = randomizer<T>>
+template <typename T = int, typename Randomizer = randomizer<T>>
 class WeightedTree : public std::vector<std::pair<std::pair<int, int>, T>> {
 public:
     template <typename Generator>
-    void generate_prufer(int n, std::pair<T, T> const& range, Generator& gen) {
+    void generate_prufer(int n, std::pair<T, T> const& range, Generator& gen, int index = 1) {
         if(n == 1) return;
-        t.generate_prufer(n, gen);
-        set(t, range, gen);
+        t.generate_prufer(n, gen, index);
+        set(range, gen);
     }
 
     template <typename Generator>
-    void generate_blocks(int n, int group_size, std::pair<T, T> const& range, Generator& gen) {
+    void generate_blocks(int n, int group_size, std::pair<T, T> const& range, Generator& gen, int index = 1) {
         if(n == 1) return;
-        t.generate_blocks(n, group_size, gen);
-        set(t, range, gen);
+        t.generate_blocks(n, group_size, gen, index);
+        set(range, gen);
     }
 
 private:
-    Tree<index> t;
+    Tree t;
     
     template <typename Generator>
     void set(std::pair<T, T> const& range, Generator& gen) {
