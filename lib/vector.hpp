@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include "randomizer.hpp"
 
 namespace libgen {
@@ -18,6 +19,13 @@ public:
 
         for (int i = 0; i < n; i++)
             (*this)[i] = rng(gen);
+    }
+
+    template<typename Generator>
+    void permutation(int n, int b, Generator& gen) {
+    	this->resize(n);
+    	std::iota(this->begin(), this->end(), b);
+    	std::shuffle(this->begin(), this->end(), gen);
     }
 
     friend std::ostream& operator<<(std::ostream& os, libgen::vector<T> const& V) {
